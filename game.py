@@ -6,6 +6,7 @@ class Person:
         self.health = health
         self.armor = armor
         self.atack = atack
+        self.position = 0
 
     def win_round(self):
         self.money += 1000
@@ -32,6 +33,9 @@ class Person:
              else:
                  print('Не хватает денег')
 
+    def move(self,position1):
+        self.position = self.position + position1
+
 class Counter_Terrorist(Person):
 
     def __init__(self,type_person,health=100,armor=0,atack=10):
@@ -51,6 +55,11 @@ class Counter_Terrorist(Person):
             print('Можно разминировать')
         else:
             print('Бобма не обнаружена')
+
+    def add_weapon_ct(self,name_weapon_ct):
+        if name_weapon_ct == 'M4A1':
+            self.atack= self.atack + 24
+
 class Terrorist(Person):
 
     def __init__(self,type_person,health=100,armor=0,atack=10):
@@ -60,18 +69,39 @@ class Terrorist(Person):
     def bomb(self):
         self.mine = True
 
-person1 = Person('ct')
-person1.win_round()
-person1.lose_round()
-person1.buy_weapon('Deagle',)
-person1.buy_weapon('AK47')
-person1.buy_armor()
-person2 = Counter_Terrorist(type_person='SWAT')
-person2.defuse()
-person2.de_mine = True
-person2.defuse()
-person3 = Terrorist(type_person='IGIL')
-person3.bomb()
-print(person1.money,person1.armor,person2.defuse())
+    def add_weapon_t(self,name_weapon_t):
+        if name_weapon_t == 'AK47':
+            self.atack = self.atack + 30
+
+class Fight:
+
+    def __init__(self,health,atack):
+        self.health = health
+        self.atack = atack
+
+    def __add__(self, other):
+        result = self.health - other.atack
+        return result
+
+
+ct1 = Counter_Terrorist(type_person='SWAT')
+tt1 = Terrorist(type_person='GTA')
+ct1.add_weapon_ct(name_weapon_ct='M4A1')
+tt1.add_weapon_t(name_weapon_t='AK47')
+ct1.move(position1=20)
+tt1.move(position1=30)
+if 0 < (ct1.position - tt1.position) <= 5 or 0 < (tt1.position - ct1.position) <= 5:
+    fight1 = Fight(ct1.health,ct1.atack)
+    fight2 = Fight(tt1.health,tt1.atack)
+    result1 = fight1 + fight2
+    result2 = fight2 + fight1
+    print(f'COUNTER-TERRORIST: DMG = {ct1.atack} HP = {ct1.health}, TERRORIST : DMG = {tt1.atack} HP = {tt1.health}')
+    print(f'COUNTER-TERRORIST: {result1} TERRORIST: {result2}')
+    print(f'COUNTER-TERRORIST POSITION: {ct1.position}, TERRORIST POSITION: {tt1.position}')
+else:
+    print(f'COUNTER-TERRORIST: DMG = {ct1.atack} HP = {ct1.health}, TERRORIST : DMG = {tt1.atack} HP = {tt1.health}')
+    print(f'COUNTER-TERRORIST POSITION: {ct1.position}, TERRORIST POSITION: {tt1.position}')
+    print('Враги не встретились')
+
 
 
